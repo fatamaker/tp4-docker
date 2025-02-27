@@ -17,17 +17,17 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class ArticleController extends AbstractController
 {
-    // #[Route('/', name: 'article_list')]
-    // public function home(ArticleRepository $articleRepository): Response
-    // {
-    //     // Retrieve all articles from the database
-    //     $articles = $articleRepository->findAll();
+    #[Route('/', name: 'article_list')]
+    public function home(ArticleRepository $articleRepository): Response
+    {
+        // Retrieve all articles from the database
+        $articles = $articleRepository->findAll();
 
-    //     // Render the template with the list of articles
-    //     return $this->render('articles/index.html.twig', [
-    //         'articles' => $articles,
-    //     ]);
-    // }
+        // Render the template with the list of articles
+        return $this->render('articles/index.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
 
 
     #[Route('/article/new', name: 'new_article', methods: ['GET', 'POST'])]
