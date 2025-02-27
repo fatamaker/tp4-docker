@@ -8,8 +8,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class IndexController extends AbstractController
 {
-    // #[Route('/', name: 'home')]
-/* public function home(): Response
+     #[Route('/', name: 'home')]
+ public function home(): Response
 {
     $articles = [
         ['title' => 'Article 1', 'content' => 'Content 1'],
@@ -20,13 +20,8 @@ class IndexController extends AbstractController
         'articles' => $articles,
     ]);
 }
- */
+ 
 
 
-#[Route('/{name}', name: 'home_name')]
 
-public function home($name)
-{
-return $this->render('articles/name.html.twig',['name' => $name]);
-}
 }
