@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-
-
 use App\Entity\Article;
+use App\Form\ArticleType ;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,23 +28,14 @@ class ArticleController extends AbstractController
         ]);
     }
 
-
     #[Route('/article/new', name: 'new_article', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = new Article();
-        $form = $this->createFormBuilder($article)
-            ->add('nom', TextType::class)
-            ->add('prix', TextType::class)
-            ->add('save', SubmitType::class, [
-                'label' => 'Créer'
-            ])
-            ->getForm();
-
+        $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $article = $form->getData();
             $entityManager->persist($article);
             $entityManager->flush();
 
@@ -57,6 +47,21 @@ class ArticleController extends AbstractController
         ]);
     }
 
+    #[Route('/article/edit/{id}', name: 'edit_article')]
+    public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            return $this->redirectToRoute('article_list');
+        }
+
+        return $this->render('articles/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
     #[Route('/article/{id}', name: 'article_show')]
     public function show(int $id, EntityManagerInterface $entityManager): Response
@@ -72,35 +77,6 @@ class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/article/edit/{id}', name: 'edit_article')]
-    public function edit(Request $request, Article $article, EntityManagerInterface $entityManager): Response
-    {
-        // Create a form for editing the article
-        $form = $this->createFormBuilder($article)
-            ->add('nom', TextType::class, ['label' => 'Nom de l\'article'])
-            ->add('prix', TextType::class, ['label' => 'Prix'])
-            ->add('save', SubmitType::class, [
-                'label' => 'Modifier',
-                'attr' => ['class' => 'btn btn-primary']
-            ])
-            ->getForm();
-
-        // Handle form submission
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Save the changes
-            $entityManager->flush();
-
-            // Redirect to the article list
-            return $this->redirectToRoute('article_list');
-        }
-
-        // Render the edit form
-        return $this->render('articles/edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
     #[Route('/article/delete/{id}', name: 'delete_article', methods: ['POST'])]
     public function delete(Article $article, EntityManagerInterface $entityManager): Response
     {
@@ -111,10 +87,4 @@ class ArticleController extends AbstractController
         // Redirect to the article list
         return $this->redirectToRoute('article_list');
     }
-
-
-    
-    
-
-
 }

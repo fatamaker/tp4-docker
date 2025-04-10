@@ -1,10 +1,17 @@
+
+
+
+
 {# templates/articles/new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter Article{% endblock %}
+{% block title %}Créer un article{% endblock %}
 
 {% block body %}
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <h1>Créer un article</h1>
+
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-success">Créer</button>
     {{ form_end(form) }}
 {% endblock %}
